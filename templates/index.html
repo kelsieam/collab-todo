@@ -9,6 +9,17 @@
     
     <body>
         <h1>wow a homepage you are just sooooo hireable kelsie my god you're gonna have a job any second</h1>
+        <h4>create user</h4>
+        <form action="/users" id="create-user-form" method="POST">
+            username
+            <input type="text" name="new-username" id="new-username" />
+            name
+            <input type="text" name="new-name" id="new-name" />
+            password
+            <input type="password" name="new-password" id="new-password" />
+            <input type="submit" id="create-user-submit" />
+        </form>
+        <h4>login</h4>
         <form action="/login" id="login-form" method="POST">
             username
             <input type="text" name="username" id="username" />
@@ -16,8 +27,16 @@
             <input type="password" name="password" id="password" />
             <input type="submit" id="login-submit" />
         </form>
-
-        <form action="/join-group" id="join-group-form" method="PATCH">
+        <h4>create group</h4>
+        <form action="/create-group" id="create-group-form" method="POST">
+            name of group
+            <input type="text" name="new-group-name" id="new-group-name" />
+            password for group (optional)
+            <input type="password" name="new-group-password" id="new-group-password" />
+            <input type="submit" name="create-group-submit" id="create-group-submit" />
+        </form>
+        <h4>join group</h4>
+        <form action="/join-group" id="join-group-form" method="POST">
             enter the group name you're trying to join
             <input type="text" name="group-name" id="group-name" />
             group password
