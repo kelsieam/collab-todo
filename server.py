@@ -1,6 +1,6 @@
 from flask import (Flask, render_template, request, session, redirect)
 from jinja2 import StrictUndefined
-from model import db, connect_to_db, User, Group, UserGroup
+from model import db, connect_to_db, User, Group, UserGroup, Task, Comment
 from datetime import datetime
 from sqlalchemy import and_
 import crud
@@ -9,6 +9,13 @@ app = Flask(__name__)
 app.secret_key = "dev"
 app.jinja_env.undefined = StrictUndefined
 
+
+@app.context_processor
+def user_info():
+    username = session['username']
+    user = User.query.filter_by(username=username).first()
+
+    return user.as_dict()
 
 
 @app.route('/')
@@ -57,11 +64,20 @@ def create_group():
     """creates a new group and assigns the user to it"""
     username = session['username']
     user = User.query.filter_by(username=username).first()
+    admin = user.user_id
 
     name = request.form.get('new-group-name')
-    password = request.form.get('new-group-password')
+    private = request.form.get('private')
+    if private == 'true':
+        private = True
+    elif private == 'false':
+        private = False
 
-    group = crud.create_group(password=password, name=name)
+    existing_group = Group.query.filter_by(name=name).first()
+    if existing_group:
+        return {'success': False, 'message': 'That group name is taken'}
+
+    group = crud.create_group(name=name, private=private, admin=admin)
     db.session.add(group)
     db.session.commit()
 
@@ -71,44 +87,87 @@ def create_group():
     db.session.add(user_group)
     db.session.commit()
 
-
     return {'success': True, 'message': f'Group {name} created'}
 
 
 @app.route('/join-group', methods=['POST'])
 def join_group():
     name = request.form.get('group-name')
-    password = request.form.get('group-password')
+    print(name, 'name')
     
     username = session['username']
     user = User.query.filter_by(username=username).first()
 
     group = Group.query.filter_by(name=name).first()
-    print(name, password, user, group, 'line 87')
+    print(name, user, group, 'line 87')
     
     if not group:
         print('if not group')
         return {'success': False, 'message': 'Group not found'}
     
-    if group.check_password(password):
-        print('if group.check_password')
-        existing_user_group = UserGroup.query.filter_by(user_id=user.user_id, group_id=group.group_id).first()
-        print(existing_user_group, 'existing_user_group')
-        if existing_user_group:
-            return {'success': False, 'message': f"You are already in group '{name}'"}
-        
-        user_group = crud.create_user_group(user_id=user.user_id, group_id=group.group_id)
-        db.session.add(user_group)
-        db.session.commit()
+    existing_user_group = UserGroup.query.filter_by(user_id=user.user_id, group_id=group.group_id).first()
+    print(existing_user_group, 'existing_user_group')
+    if existing_user_group:
+        return {'success': False, 'message': f"You are already in group '{name}'"}
 
-        return {'success': True, 'message': f'Added to group {name}'}
+    new_request = crud.create_request(user_id=user.user_id, group_id=group.group_id)
+    db.session.add(new_request)
+    db.session.commit()
 
-    return {'success': False, 'message': 'Incorrect password'}
+    return {'success': True, 'message': f'request sent to join group {name}'}
 
 
+@app.route('/current-group/<group_id>')
+def current_group(group_id):
+    current_group = Group.query.filter_by(group_id=group_id).first()
+    session['group'] = current_group.as_dict()
+
+    tasks = Task.query.filter_by(group_id=group_id).all()
+    return [task.as_dict() for task in tasks]
+    
+
+
+# @app.route('/tasks', methods=['GET'])
+# def group_tasks():
 
 
 
+@app.route('/tasks', methods=['POST'])
+def create_task():
+    current_user = user_info()
+    assigned_to = request.form.get('assigned-to')
+    assigned_to_user = User.query.filter_by(username=assigned_to).first()
+    print(assigned_to_user, 'assigned_to_user')
+    group_id = None
+    if 'group' in session and session['group']:
+        group_id = session['group']['group_id']
+    content = request.form.get('task-content')
+    urgency = int(request.form.get('task-urgency'))
+
+    new_task = crud.create_task(assigned_by_id=current_user['user_id'], assigned_to_id=assigned_to_user.user_id, 
+                     group_id=group_id, content=content, score=None, urgency=urgency, completed=False)
+    
+    db.session.add(new_task)
+    db.session.commit()
+
+    return {'success': True, 'message': 'Task added'}
+
+
+@app.route('/groups', methods=['GET'])
+def user_groups():
+    current_user = user_info()
+    group_ids = UserGroup.query.filter_by(user_id=current_user['user_id']).all()
+    group_ids = [group.group_id for group in group_ids]
+    # print(group_ids)
+
+    cur_user_groups = db.session.query(Group).filter(Group.group_id.in_(group_ids)).all()
+
+    groups = []
+    for group in cur_user_groups:
+        groups.append(group.as_dict())
+    # print(groups)
+
+    return groups
 
 
 

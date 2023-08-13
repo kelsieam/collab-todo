@@ -31,17 +31,42 @@
         <form action="/create-group" id="create-group-form" method="POST">
             name of group
             <input type="text" name="new-group-name" id="new-group-name" />
-            password for group (optional)
-            <input type="password" name="new-group-password" id="new-group-password" />
+            would you like this group to be private?
+            no:
+            <input type="radio" name="private-group" id="private-group-no" value="false"/>
+            yes:
+            <input type="radio" name="private-group" id="private-group-yes" value="true" />
             <input type="submit" name="create-group-submit" id="create-group-submit" />
         </form>
         <h4>join group</h4>
         <form action="/join-group" id="join-group-form" method="POST">
             enter the group name you're trying to join
             <input type="text" name="group-name" id="group-name" />
-            group password
-            <input type="password" name="group-password" id="group-password" />
-            <input type="submit" name="join-group-submit" id="join-group-submit" />
+            <input type="submit" name="join-group-submit" id="join-group-submit" value="request to join" />
         </form>
+        {% if session['username'] %}
+            <h4>{{ session['username'] }}'s groups</h4>
+        {% endif %}
+        <div id="user-groups-list"></div>
+        <h4>create task</h4>
+        <form action="/tasks" id="create-task-form" method="POST">
+            name of task
+            <input type="text" name="task-content" id="task-content" />
+            <label for="assigned-to">assigned to:</label>
+            <select id="assigned-to" name="assigned-to">
+                <option value="user2">Yourself</option>
+            </select>
+            urgency:
+            <select id="task-urgency" name="task-urgency">
+                <option value="1">not urgent</option>
+                <option value="2">a little urgent</option>
+                <option value="3">kinda urgent</option>
+                <option value="4">urgent</option>
+                <option value="5">so urgent omg</option>
+            </select>
+            <input type="submit" name="create-task-submit" id="create-task-submit" value="create task" />
+        </form>
+        
+    <script src="/static/js/homepage.js"></script>
     </body>
 </html>

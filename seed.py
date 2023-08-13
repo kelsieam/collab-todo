@@ -19,3 +19,6 @@ with server.app.app_context():
 
     db.session.add_all(users)
     db.session.commit()
+
+    
+    
