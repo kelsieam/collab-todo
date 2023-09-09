@@ -26,8 +26,8 @@ def create_request(user_id, group_id):
     return request
 
 
-def create_task(assigned_by_id, assigned_to_id, group_id, content, score, urgency, completed):
-    task = Task(assigned_by_id=assigned_by_id, assigned_to_id=assigned_to_id, group_id=group_id,
+def create_task(assigned_by, assigned_to, group_id, content, score, urgency, completed):
+    task = Task(assigned_by=assigned_by, assigned_to=assigned_to, group_id=group_id,
                 content=content, score=score, urgency=urgency, completed=completed)
 
     return task

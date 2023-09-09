@@ -38,7 +38,9 @@ def create_user():
     db.session.add(user)
     db.session.commit()
 
-    return {'success': True, 'message': 'User successfully created'}
+    session['username'] = username
+
+    return {'success': True, 'message': 'User successfully created', 'user': user.as_dict()}
 
 
 @app.route('/login', methods=['POST'])
@@ -123,6 +125,7 @@ def current_group(group_id):
     session['group'] = current_group.as_dict()
 
     tasks = Task.query.filter_by(group_id=group_id).all()
+    print(session['group'])
     return [task.as_dict() for task in tasks]
     
 
@@ -144,13 +147,13 @@ def create_task():
     content = request.form.get('task-content')
     urgency = int(request.form.get('task-urgency'))
 
-    new_task = crud.create_task(assigned_by_id=current_user['user_id'], assigned_to_id=assigned_to_user.user_id, 
+    new_task = crud.create_task(assigned_by=current_user['user_id'], assigned_to=assigned_to_user.user_id, 
                      group_id=group_id, content=content, score=None, urgency=urgency, completed=False)
     
     db.session.add(new_task)
     db.session.commit()
 
-    return {'success': True, 'message': 'Task added'}
+    return {'success': True, 'message': 'Task added', 'new_task': new_task.as_dict()}
 
 
 @app.route('/groups', methods=['GET'])

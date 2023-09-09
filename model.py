@@ -116,8 +116,8 @@ class Task(db.Model):
     task_id = db.Column(db.Integer,
                         autoincrement=True, 
                         primary_key=True)
-    assigned_by_id = db.Column(db.Integer)
-    assigned_to_id = db.Column(db.Integer)
+    assigned_by = db.Column(db.Integer)
+    assigned_to = db.Column(db.Integer)
     group_id = db.Column(db.Integer, db.ForeignKey('groups.group_id'))
     content = db.Column(db.String,
                         nullable=False)
