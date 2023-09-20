@@ -63,9 +63,10 @@ class Group(db.Model):
     group_id = db.Column(db.Integer, 
                         autoincrement=True, 
                         primary_key=True)
-    name = db.Column(db.String(30), nullable=False, unique=True)
+    name = db.Column(db.String, nullable=False)
     private = db.Column(db.Boolean, nullable=False, default=True)
     admin = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    group_code = db.Column(db.String, nullable=False)
 
     user_groups = db.relationship('UserGroup', back_populates='group')
     # user = db.relationship('User', back_populates='group')

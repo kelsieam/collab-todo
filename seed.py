@@ -22,7 +22,8 @@ with server.app.app_context():
     db.session.commit()
 
     groups = [
-        create_group('group1', True, 1)
+        create_group('group1', True, 1),
+        create_group('group2', True, 2)
     ]
 
     db.session.add_all(groups)
@@ -30,7 +31,9 @@ with server.app.app_context():
 
     user_groups = [
         create_user_group(1, 1),
-        create_user_group(2, 1)
+        create_user_group(2, 1),
+        create_user_group(2, 2),
+        create_user_group(3, 2)
     ]
 
     db.session.add_all(user_groups)

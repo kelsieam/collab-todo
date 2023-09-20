@@ -1,4 +1,6 @@
-from model import connect_to_db, User, Group, UserGroup, Request, Task, Comment
+from model import db, connect_to_db, User, Group, UserGroup, Request, Task, Comment
+import random
+import string
 
 
 def create_user(username, password, name):
@@ -9,7 +11,15 @@ def create_user(username, password, name):
 
 
 def create_group(name, private, admin):
-    group = Group(name=name, private=private, admin=admin)
+
+    while True: # check for existing group code
+        chars = string.ascii_letters + string.digits
+        group_code = ''.join(random.choice(chars) for _ in range(6))
+        existing_group = Group.query.filter_by(group_code=group_code).first()
+        if not existing_group:
+            break
+    
+    group = Group(name=name, private=private, admin=admin, group_code=group_code)
 
     return group
 

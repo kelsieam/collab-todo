@@ -44,9 +44,9 @@
             <input type="text" name="group-name" id="group-name" />
             <input type="submit" name="join-group-submit" id="join-group-submit" value="request to join" />
         </form>
-        {% if session['username'] %}
+        <!-- {% if session['username'] %}
             <h4>{{ session['username'] }}'s groups</h4>
-        {% endif %}
+        {% endif %} -->
         <div id="user-groups-list"></div>
         <h4>create task</h4>
         <form action="/tasks" id="create-task-form" method="POST">
