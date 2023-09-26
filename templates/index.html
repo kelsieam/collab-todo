@@ -9,6 +9,7 @@
     
     <body>
         <h1>wow a homepage you are just sooooo hireable kelsie my god you're gonna have a job any second</h1>
+        <div id="message-holder"></div>
         <h4>create user</h4>
         <form action="/users" id="create-user-form" method="POST">
             username
@@ -19,14 +20,16 @@
             <input type="password" name="new-password" id="new-password" />
             <input type="submit" id="create-user-submit" />
         </form>
-        <h4>login</h4>
-        <form action="/login" id="login-form" method="POST">
-            username
-            <input type="text" name="username" id="username" />
-            password
-            <input type="password" name="password" id="password" />
-            <input type="submit" id="login-submit" />
-        </form>
+        <div id="login-div">
+            <h4>login</h4>
+            <form action="/login" id="login-form" method="POST">
+                username
+                <input type="text" name="username" id="username" />
+                password
+                <input type="password" name="password" id="password" />
+                <input type="submit" id="login-submit" />
+            </form>
+        </div>
         <h4>create group</h4>
         <form action="/create-group" id="create-group-form" method="POST">
             name of group
@@ -44,31 +47,30 @@
             <input type="text" name="group-name" id="group-name" />
             <input type="submit" name="join-group-submit" id="join-group-submit" value="request to join" />
         </form>
-        <!-- {% if session['username'] %}
-            <h4>{{ session['username'] }}'s groups</h4>
-        {% endif %} -->
         <div id="user-groups-list"></div>
-        <h4>create task</h4>
-        <form action="/tasks" id="create-task-form" method="POST">
-            name of task
-            <input type="text" name="task-content" id="task-content" />
-            <label for="assigned-to">assigned to:</label>
-            <select id="assigned-to" name="assigned-to">
-                <option value="user2">Yourself</option>
-            </select>
-            urgency:
-            <select id="task-urgency" name="task-urgency">
-                <option value="1">not urgent</option>
-                <option value="2">a little urgent</option>
-                <option value="3">kinda urgent</option>
-                <option value="4">urgent</option>
-                <option value="5">so urgent omg</option>
-            </select>
-            <input type="submit" name="create-task-submit" id="create-task-submit" value="create task" />
-        </form>
-        <h4>tasks</h4>
-        <div id="task-holder"></div>
+        <div id="create-task-container" style="display: none;">
+            <h4>create task</h4>
+            <form action="/tasks" id="create-task-form" method="POST">
+                name of task
+                <input type="text" name="task-content" id="task-content" />
+                <label for="assigned-to">assigned to:</label>
+                <select id="assigned-to" name="assigned-to">
+                    <option value="user2">Yourself</option>
+                </select>
+                urgency:
+                <select id="task-urgency" name="task-urgency">
+                    <option value="1">not urgent</option>
+                    <option value="2">a little urgent</option>
+                    <option value="3">kinda urgent</option>
+                    <option value="4">urgent</option>
+                    <option value="5">so urgent omg</option>
+                </select>
+                <input type="submit" name="create-task-submit" id="create-task-submit" value="create task" />
+            </form>
+            <h4>tasks</h4>
+            <ul id="task-holder"></ul>
+        </div>
         
-    <script src="/static/js/homepage.js"></script>
+        <script src="/static/js/homepage2.js"></script>
     </body>
 </html>

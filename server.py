@@ -141,7 +141,7 @@ def current_group(group_id):
     print(group_members, 'group_members')
 
     tasks = Task.query.filter_by(group_id=group_id).all()
-    print(session['group'])
+
     return [task.as_dict() for task in tasks]
     
 
