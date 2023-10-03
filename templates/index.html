@@ -48,6 +48,7 @@
             <input type="submit" name="join-group-submit" id="join-group-submit" value="request to join" />
         </form>
         <div id="user-groups-list"></div>
+        <div id="group-members"></div>
         <div id="create-task-container" style="display: none;">
             <h4>create task</h4>
             <form action="/tasks" id="create-task-form" method="POST">
@@ -68,9 +69,11 @@
                 <input type="submit" name="create-task-submit" id="create-task-submit" value="create task" />
             </form>
             <h4>tasks</h4>
-            <ul id="task-holder"></ul>
+            <div id="task-holder">
+                <div id="self-tasks" style="display: inline; width: 30%"><h3>your tasks</h3></div>
+                <div id="group-tasks" style="display: inline; width: 30%"><h3>others tasks</h3></div>
+            </div>
         </div>
-        
         <script src="/static/js/homepage2.js"></script>
     </body>
 </html>

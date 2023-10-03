@@ -47,6 +47,8 @@ def create_user():
     db.session.commit()
 
     session['username'] = username
+    user_id = User.query.filter_by(username=username).first().user_id
+    session['user_id'] = user_id
 
     return {'success': True, 'message': 'User successfully created', 'user': user.as_dict()}
 
@@ -64,6 +66,8 @@ def login():
     
     if user.check_password(password):
         session['username'] = username
+        user_id = User.query.filter_by(username=username).first().user_id
+        session['user_id'] = user_id
         return {'success': True, 'user': user.as_dict()}
     
     return {'success': False, 'message': 'Incorrect password'}
@@ -140,15 +144,17 @@ def current_group(group_id):
 
     print(group_members, 'group_members')
 
+    user_id = session['user_id']
     tasks = Task.query.filter_by(group_id=group_id).all()
-
-    return [task.as_dict() for task in tasks]
+    user_tasks = [task.as_dict() for task in tasks if task.assigned_to == user_id]
+    group_tasks = [task.as_dict() for task in tasks if task.as_dict() not in user_tasks]
+    
+    return {'user_tasks': user_tasks, 'group_tasks': group_tasks}
     
 
 
 # @app.route('/tasks', methods=['GET'])
 # def group_tasks():
-
 
 
 @app.route('/tasks', methods=['POST'])

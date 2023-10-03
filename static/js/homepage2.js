@@ -2,6 +2,8 @@
 const groupsList = document.getElementById("user-groups-list");
 const taskSubmit = document.getElementById("create-task-submit");
 const tasksContainer = document.getElementById("task-holder");
+const selfTasksContainer = document.getElementById("self-tasks");
+const groupTasksContainer = document.getElementById("group-tasks");
 const tasksSection = document.getElementById("create-task-container");
 const createUserSubmit = document.getElementById("create-user-submit");
 const createGroupSubmit = document.getElementById("create-group-submit");
@@ -94,7 +96,8 @@ taskSubmit.addEventListener("click", function(evt) {
 
 function activateGroup(group) { // sets clicked group as active
 
-  tasksContainer.innerHTML = "";
+  selfTasksContainer.innerHTML = "<h5>Your tasks</h5>";
+  groupTasksContainer.innerHTML = "<h5>Other's tasks</h5>";
 
   // deselect
   const prevSelected = document.getElementById("selected-group");
@@ -124,14 +127,28 @@ function displayGroup(group) { // adds group to group display
 
     fetch(`/current-group/${group.group_id}`)
       .then((res) => res.json())
-      .then((groupTasks) => {
-        console.log("/current-group/group-id", groupTasks);
-        groupTasks.forEach((task) => {
-          console.log("groupTasks.forEach", task.content);
-          const taskName = document.createElement("li");
-          taskName.innerHTML = task.content;
-          tasksContainer.appendChild(taskName);
+      .then((tasks) => {
+        console.log("/current-group/group-id", tasks);
+        if (tasks.user_tasks.length === 0) {
+          selfTasksContainer.innerHTML += `<p>nothing here yet :( :( :( </p>`
+        }
+        tasks.user_tasks.sort((a, b) => b.urgency - a.urgency);
+        tasks.user_tasks.forEach((userTask) => {
+          console.log("userTasks.forEach", userTask.content);
+          const userTaskName = document.createElement("li");
+          userTaskName.innerHTML = userTask.content;
+          selfTasksContainer.appendChild(userTaskName);
         });
+
+        if (tasks.group_tasks.length === 0) {
+          groupTasksContainer.innerHTML += "<p>nothing here yet :( </p>"
+        }
+        tasks.group_tasks.forEach((groupTask) => {
+          console.log("groupTasks.forEach", groupTask.content);
+          const groupTaskName = document.createElement("li");
+          groupTaskName.innerHTML = groupTask.content;
+          groupTasksContainer.appendChild(groupTaskName);
+        })
       });
   });
 
@@ -147,7 +164,3 @@ addEventListener("DOMContentLoaded", (evt) => {
       groups.data.groups.forEach((group) => displayGroup(group));
     })
 })
-
-
-
-
