@@ -175,7 +175,12 @@ def create_task():
     db.session.add(new_task)
     db.session.commit()
 
-    return {'success': True, 'message': 'Task added', 'new_task': new_task.as_dict()}
+    is_self = False
+    if new_task.assigned_to == current_user['user_id']:
+        is_self = True
+    
+# 
+    return {'success': True, 'message': 'Task added', 'new_task': new_task.as_dict(), 'is_self': is_self}
 
 
 @app.route('/groups', methods=['GET'])

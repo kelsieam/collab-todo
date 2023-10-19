@@ -42,7 +42,7 @@ with server.app.app_context():
     
     tasks = [
         # assigned_by, assigned_to, group_id, content, score, urgency, completed
-        crud.create_task(2, 3, 2, "ooh a task assigned to someone else", None, 5, False),
+        crud.create_task(2, 3, 2, "ooh a task assigned to someone else", None, 5, True),
         crud.create_task(2, 4, 2, "look task assigned to someone else", None, 3, False),
         crud.create_task(2, 2, 2, "ooh a task assigned to myself", None, 2, False)
     ]

@@ -10,16 +10,31 @@
     <body>
         <h1>wow a homepage you are just sooooo hireable kelsie my god you're gonna have a job any second</h1>
         <div id="message-holder"></div>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createUserModal" id="create-user-expand">
+            Create Account
+          </button>
+        <div class="modal fade" id="createUserModal" tabindex="-1" aria-labelledby="createUserModalLabel" style="display: none;">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="createUserModalLabel">Create Account</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/users" id="create-user-form" method="POST">
+                        username
+                        <input type="text" name="new-username" id="new-username" />
+                        name
+                        <input type="text" name="new-name" id="new-name" />
+                        password
+                        <input type="password" name="new-password" id="new-password" />
+                        <input type="submit" id="create-user-submit" />
+                    </form>
+                </div>
+              </div>
+            </div>
+          </div>
         <h4>create user</h4>
-        <form action="/users" id="create-user-form" method="POST">
-            username
-            <input type="text" name="new-username" id="new-username" />
-            name
-            <input type="text" name="new-name" id="new-name" />
-            password
-            <input type="password" name="new-password" id="new-password" />
-            <input type="submit" id="create-user-submit" />
-        </form>
         <div id="login-div">
             <h4>login</h4>
             <form action="/login" id="login-form" method="POST">
@@ -70,6 +85,25 @@
             </form>
             <h4>tasks</h4>
             <div id="task-holder">
+                <table class="table" id="tasks-table">
+                    <thead>
+                      <tr>
+                        <th scope="col" id="assigned-to-col">assigned to</th>
+                        <th scope="col" id="task-content-col">task</th>
+                        <th scope="col" id="urgency-col">urgency</th>
+                        <th scope="col" id="assigned-by-col">assigned by</th>
+                        <th scope="col" id="completed-col">completed?</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tasks-table-body">
+                      <tr>
+                        <th scope="row">task.assigned_to</th>
+                        <td>task.content</td>
+                        <td>task.urgency</td>
+                        <td>task.assigned_by</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 <div id="self-tasks" style="display: inline; width: 30%"><h3>your tasks</h3></div>
                 <div id="group-tasks" style="display: inline; width: 30%"><h3>others tasks</h3></div>
             </div>

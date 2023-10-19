@@ -9,9 +9,17 @@ const createUserSubmit = document.getElementById("create-user-submit");
 const createGroupSubmit = document.getElementById("create-group-submit");
 const joinGroupSubmit = document.getElementById("join-group-submit");
 const loginSubmit = document.getElementById("login-submit");
-const createTaskContainer = document.getElementById("create-task-container");
 const loginSection = document.getElementById("login-div");
 const messageHolder = document.getElementById("message-holder");
+const tasksTable = document.getElementById("tasks-table");
+const tasksTableBody = document.getElementById("tasks-table-body");
+
+
+document.getElementById("create-user-expand").addEventListener("click", function(evt) {
+  console.log("clicked")
+  console.log(document.getElementById("createUserModal"))
+  document.getElementById("createUserModal").display = "block";
+})
 
 
 createUserSubmit.addEventListener("click", function (evt) {
@@ -76,7 +84,7 @@ joinGroupSubmit.addEventListener("click", function(evt) {
       console.log("/join-group", responseJson);
       messageHolder.innerHTML = responseJson.message;
       });
-  });
+});
 
 
 taskSubmit.addEventListener("click", function(evt) {
@@ -90,14 +98,19 @@ taskSubmit.addEventListener("click", function(evt) {
     .then((responseJson) => {
       console.log("/tasks", responseJson);
       messageHolder.innerHTML = responseJson.message;
+      displayTask(responseJson.new_task, responseJson.is_self)
     });
   });
 
 
 function activateGroup(group) { // sets clicked group as active
 
+  // clearing prev group content
   selfTasksContainer.innerHTML = "<h5>Your tasks</h5>";
   groupTasksContainer.innerHTML = "<h5>Other's tasks</h5>";
+  while (tasksTableBody.firstChild) {
+    tasksTableBody.removeChild(tasksTableBody.firstChild);
+  }
 
   // deselect
   const prevSelected = document.getElementById("selected-group");
@@ -130,29 +143,45 @@ function displayGroup(group) { // adds group to group display
       .then((tasks) => {
         console.log("/current-group/group-id", tasks);
         if (tasks.user_tasks.length === 0) {
-          selfTasksContainer.innerHTML += `<p>nothing here yet :( :( :( </p>`
+          selfTasksContainer.innerHTML += "<p>nothing here yet :( :( :( </p>"
         }
         tasks.user_tasks.sort((a, b) => b.urgency - a.urgency);
         tasks.user_tasks.forEach((userTask) => {
-          console.log("userTasks.forEach", userTask.content);
-          const userTaskName = document.createElement("li");
-          userTaskName.innerHTML = userTask.content;
-          selfTasksContainer.appendChild(userTaskName);
+          console.log(userTask);
+          displayTask(userTask, true);
         });
 
         if (tasks.group_tasks.length === 0) {
           groupTasksContainer.innerHTML += "<p>nothing here yet :( </p>"
         }
         tasks.group_tasks.forEach((groupTask) => {
-          console.log("groupTasks.forEach", groupTask.content);
-          const groupTaskName = document.createElement("li");
-          groupTaskName.innerHTML = groupTask.content;
-          groupTasksContainer.appendChild(groupTaskName);
+          displayTask(groupTask, false);
         })
       });
   });
 
   groupsList.appendChild(groupButton);
+}
+
+
+function displayTask(task, isUser) {
+  let taskCompletion;
+  if (task.completed == true) {
+    taskCompletion = `<input type="checkbox" id="completed-${task.task_id}" checked/ >`
+  } else {
+    taskCompletion = `<input type="checkbox" id="completed-${task.task_id}"/ >`
+  }
+  const taskName = document.createElement("li");
+  taskName.innerHTML = task.content;
+  if (isUser) {
+    selfTasksContainer.appendChild(taskName);
+  } else {
+    groupTasksContainer.appendChild(taskName);
+  }
+  const taskRow = document.createElement('tr');
+  taskRow.innerHTML = `<th scope="row">${task.assigned_to}</th><td>${task.content}</td><td>${task.urgency}</td><td>${task.assigned_by}</td><td>${taskCompletion}</td>`
+  tasksTableBody.appendChild(taskRow);
+  
 }
 
 
@@ -164,3 +193,6 @@ addEventListener("DOMContentLoaded", (evt) => {
       groups.data.groups.forEach((group) => displayGroup(group));
     })
 })
+
+
+
