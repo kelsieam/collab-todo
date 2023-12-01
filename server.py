@@ -68,7 +68,7 @@ def login():
         session['username'] = username
         user_id = User.query.filter_by(username=username).first().user_id
         session['user_id'] = user_id
-        return {'success': True, 'user': user.as_dict()}
+        return {'success': True, 'user': user.as_dict(), 'message': 'Logged in successfully'}
     
     return {'success': False, 'message': 'Incorrect password'}
 
@@ -181,6 +181,24 @@ def create_task():
     
 # 
     return {'success': True, 'message': 'Task added', 'new_task': new_task.as_dict(), 'is_self': is_self}
+
+
+@app.route('/complete_task/<task_id>', methods=['PATCH'])
+def complete_task(task_id):
+    current_user = user_info()
+    task = Task.query.filter_by(task_id=task_id).first()
+    print(task, "task")
+    if task.completed:
+        task.completed = False
+    else:
+        task.completed = True
+    
+    db.session.add(task)
+    db.session.commit()
+
+    return {'success': True, 'message': 'updated', 'task': task.as_dict()}
+
+
 
 
 @app.route('/groups', methods=['GET'])

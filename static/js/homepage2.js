@@ -1,4 +1,3 @@
-
 const groupsList = document.getElementById("user-groups-list");
 const taskSubmit = document.getElementById("create-task-submit");
 const tasksContainer = document.getElementById("task-holder");
@@ -11,8 +10,10 @@ const joinGroupSubmit = document.getElementById("join-group-submit");
 const loginSubmit = document.getElementById("login-submit");
 const loginSection = document.getElementById("login-div");
 const messageHolder = document.getElementById("message-holder");
-const tasksTable = document.getElementById("tasks-table");
-const tasksTableBody = document.getElementById("tasks-table-body");
+const tasksTableSelf = document.getElementById("tasks-table-self");
+const tasksTableSelfBody = document.getElementById("tasks-table-self-body");
+const tasksTableGroup = document.getElementById("tasks-table-group");
+const tasksTableGroupBody = document.getElementById("tasks-table-group-body");
 
 
 document.getElementById("create-user-expand").addEventListener("click", function(evt) {
@@ -83,7 +84,7 @@ joinGroupSubmit.addEventListener("click", function(evt) {
       .then((responseJson) => {
       console.log("/join-group", responseJson);
       messageHolder.innerHTML = responseJson.message;
-      });
+      })
 });
 
 
@@ -98,7 +99,7 @@ taskSubmit.addEventListener("click", function(evt) {
     .then((responseJson) => {
       console.log("/tasks", responseJson);
       messageHolder.innerHTML = responseJson.message;
-      displayTask(responseJson.new_task, responseJson.is_self)
+      displayTask(responseJson.new_task, responseJson.is_self);
     });
   });
 
@@ -108,8 +109,12 @@ function activateGroup(group) { // sets clicked group as active
   // clearing prev group content
   selfTasksContainer.innerHTML = "<h5>Your tasks</h5>";
   groupTasksContainer.innerHTML = "<h5>Other's tasks</h5>";
-  while (tasksTableBody.firstChild) {
-    tasksTableBody.removeChild(tasksTableBody.firstChild);
+  while (tasksTableSelfBody.firstChild) {
+    tasksTableSelfBody.removeChild(tasksTableSelfBody.firstChild);
+  }
+
+  while (tasksTableGroupBody.firstChild) {
+    tasksTableGroupBody.removeChild(tasksTableGroupBody.firstChild);
   }
 
   // deselect
@@ -165,23 +170,73 @@ function displayGroup(group) { // adds group to group display
 
 
 function displayTask(task, isUser) {
-  let taskCompletion;
+  let taskCompletionSelf = document.createElement("input");
+  taskCompletionSelf.setAttribute("type", "checkbox");
+  taskCompletionSelf.setAttribute("id", `completed-${task.task_id}`);
+
   if (task.completed == true) {
-    taskCompletion = `<input type="checkbox" id="completed-${task.task_id}" checked/ >`
-  } else {
-    taskCompletion = `<input type="checkbox" id="completed-${task.task_id}"/ >`
-  }
-  const taskName = document.createElement("li");
-  taskName.innerHTML = task.content;
+    taskCompletionSelf.checked = true;
+  } 
+  toggleComplete(taskCompletionSelf, task.task_id);
+
+
+  let taskCompletionGroup = document.createElement("input");
+  taskCompletionGroup.setAttribute("type", "checkbox");
+  taskCompletionGroup.setAttribute("id", `completed-${task.task_id}`);
+
+  if (task.completed == true) {
+    taskCompletionGroup.checked = true;
+  } 
+  toggleComplete(taskCompletionGroup, task.task_id);
+
+  // const taskName = document.createElement("li");
+  // taskName.innerHTML = task.content;
+  // if (isUser) {
+  //   selfTasksContainer.appendChild(taskName);
+  // } else {
+  //   groupTasksContainer.appendChild(taskName);
+  // }
+  // const taskRow = document.createElement('tr');
+  // taskRow.innerHTML = `<th scope="row">${task.assigned_to}</th><td>${task.content}</td><td>${task.urgency}</td><td>${task.assigned_by}</td>`
+  // const completedCol = document.createElement('td');
+  // completedCol.appendChild(taskCompletion);
+  // taskRow.appendChild(completedCol);
+  // tasksTableSelfBody.appendChild(taskRow);
+
+  // creating self tasks table
+  const taskRowSelf = document.createElement('tr');
+  taskRowSelf.innerHTML = `<th scope="row">${task.assigned_to}</th><td>${task.content}</td><td>${task.urgency}</td><td>${task.assigned_by}</td>`;
+  const completedColSelf = document.createElement('td');
+  completedColSelf.appendChild(taskCompletionSelf);
+  taskRowSelf.appendChild(completedColSelf);
+
+  // creating group tasks table
+  const taskRowGroup = document.createElement('tr');
+  taskRowGroup.innerHTML = `<th scope="row">${task.assigned_to}</th><td>${task.content}</td><td>${task.urgency}</td><td>${task.assigned_by}</td>`;
+  const completedColGroup = document.createElement('td');
+  completedColGroup.appendChild(taskCompletionGroup);
+  taskRowGroup.appendChild(completedColGroup);
+
   if (isUser) {
-    selfTasksContainer.appendChild(taskName);
+    tasksTableSelfBody.appendChild(taskRowSelf);
   } else {
-    groupTasksContainer.appendChild(taskName);
+    tasksTableGroupBody.appendChild(taskRowGroup);
   }
-  const taskRow = document.createElement('tr');
-  taskRow.innerHTML = `<th scope="row">${task.assigned_to}</th><td>${task.content}</td><td>${task.urgency}</td><td>${task.assigned_by}</td><td>${taskCompletion}</td>`
-  tasksTableBody.appendChild(taskRow);
   
+}
+
+function toggleComplete(taskCompletion, taskId) {
+  console.log(taskCompletion, taskCompletion.value);
+  taskCompletion.addEventListener(("click"), function(evt) {
+    if (taskCompletion.value = "checked") {
+      console.log("checked");
+    } else {
+      console.log("not checked");
+    }
+    fetch(`/complete_task/${taskId}`, {
+      method: "PATCH",
+    })
+  })
 }
 
 
