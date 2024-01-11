@@ -14,14 +14,26 @@ const tasksTableSelf = document.getElementById("tasks-table-self");
 const tasksTableSelfBody = document.getElementById("tasks-table-self-body");
 const tasksTableGroup = document.getElementById("tasks-table-group");
 const tasksTableGroupBody = document.getElementById("tasks-table-group-body");
+const createUserButton = document.getElementById("create-user-expand");
+const createUserContainer = document.getElementById("create-user-form-holder");
 
-
-document.getElementById("create-user-expand").addEventListener("click", function(evt) {
-  console.log("clicked")
-  console.log(document.getElementById("createUserModal"))
-  document.getElementById("createUserModal").display = "block";
+createUserButton.addEventListener("click", function(evt) {
+  createUserContainer.setAttribute("style", "display: block;");
 })
+// document.getElementById("create-user-expand").addEventListener("click", function(evt) {
+//   console.log("clicked")
+//   console.log(document.getElementById("createUserModal"))
+//   document.getElementById("createUserModal").display = "block";
+// })
 
+// const myModal = document.getElementById('myModal');
+// const myInput = document.getElementById('myInput');
+
+// console.log(myModal);
+
+// myModal.addEventListener('shown.bs.modal', () => {
+//   myInput.focus()
+// })
 
 createUserSubmit.addEventListener("click", function (evt) {
   evt.preventDefault();
