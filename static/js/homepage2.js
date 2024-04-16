@@ -18,6 +18,7 @@ const createUserButton = document.getElementById("create-user-expand");
 const createUserContainer = document.getElementById("create-user-form-holder");
 
 createUserButton.addEventListener("click", function(evt) {
+  createUserButton.setAttribute("style", "display: none;");
   createUserContainer.setAttribute("style", "display: block;");
 })
 // document.getElementById("create-user-expand").addEventListener("click", function(evt) {
@@ -37,6 +38,7 @@ createUserButton.addEventListener("click", function(evt) {
 
 createUserSubmit.addEventListener("click", function (evt) {
   evt.preventDefault();
+  createUserContainer.setAttribute("style", "display: none;");
   let createUserFormData = new FormData(
     document.getElementById("create-user-form")
   );

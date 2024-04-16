@@ -68,6 +68,7 @@ def login():
         session['username'] = username
         user_id = User.query.filter_by(username=username).first().user_id
         session['user_id'] = user_id
+        session['logged_in'] = True
         return {'success': True, 'user': user.as_dict(), 'message': 'Logged in successfully'}
     
     return {'success': False, 'message': 'Incorrect password'}
